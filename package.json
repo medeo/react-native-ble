@@ -29,7 +29,14 @@
     "url": "https://github.com/jacobrosenthal/react-native-ble/issues"
   },
   "homepage": "https://github.com/jacobrosenthal/react-native-ble",
-  "scripts": {},
+  "scripts": {
+    "commit": "git-cz"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/@medeo/cz-conventional-changelog"
+    }
+  },
   "dependencies": {
     "noble": "^1.5.0",
     "debug": "^2.2.0",
@@ -37,5 +44,9 @@
     "events": "^1.1.0",
     "util": "^0.10.3"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@medeo/cz-conventional-changelog": "^1.0.0",
+    "commitizen": "^2.10.1"
+  }
 }
