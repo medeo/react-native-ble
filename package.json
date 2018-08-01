@@ -1,5 +1,5 @@
 {
-  "name": "react-native-ble",
+  "name": "@medeo/react-native-ble",
   "repository": {
     "type": "git",
     "url": "https://github.com/medeo/react-native-ble.git"
