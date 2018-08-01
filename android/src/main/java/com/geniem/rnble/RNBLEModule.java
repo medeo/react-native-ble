@@ -401,8 +401,13 @@ class RNBLEModule extends ReactContextBaseJavaModule implements LifecycleEventLi
                     if(cUuid != null && cUuid.equalsIgnoreCase(characteristicUuid)){
                         if(bluetoothGatt != null) {
                             BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID_CLIENT_CHARACTERISTIC_CONFIG);
+                            int propertyBitmask = characteristic.getProperties();
                             if(descriptor != null) {
-                                descriptor.setValue(notify ? BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE : BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
+                                if((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_INDICATE) != 0) {
+                                    descriptor.setValue(notify ? BluetoothGattDescriptor.ENABLE_INDICATION_VALUE : BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
+                                } else {
+                                    descriptor.setValue(notify ? BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE : BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
+                                }
                                 boolean result = bluetoothGatt.writeDescriptor(descriptor);
                                 if(result) {
                                     bluetoothGatt.setCharacteristicNotification(characteristic, notify);

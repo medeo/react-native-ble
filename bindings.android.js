@@ -37,7 +37,7 @@ NobleBindings.prototype.onDisconnect = function({ peripheralUuid, error = null }
 };
 
 NobleBindings.prototype.onServicesDiscover = function({ peripheralUuid, serviceUuids }) {
-  this.emit('servicesDiscover', peripheralUuid, serviceUuids);
+  this.emit('servicesDiscover', peripheralUuid, to16BitsUuids(serviceUuids));
 };
 
 NobleBindings.prototype.onIncludedServicesDiscover = function({ peripheralUuid, serviceUuid, includedServiceUuids }) {
@@ -45,11 +45,12 @@ NobleBindings.prototype.onIncludedServicesDiscover = function({ peripheralUuid, 
 };
 
 NobleBindings.prototype.onCharacteristicsDiscover = function({ peripheralUuid, serviceUuid, characteristics }) {
+  const modifiedCharacteristics = characteristics.map(characteristic => ({ ...characteristic, uuid:to16BitsUuid(characteristic.uuid) }))
   this.emit(
     'characteristicsDiscover', 
     peripheralUuid, 
-    serviceUuid, 
-    characteristics
+    to16BitsUuid(serviceUuid), 
+    modifiedCharacteristics
   );
 };
 
@@ -58,13 +59,13 @@ NobleBindings.prototype.onDescriptorsDiscover = function({ peripheralUuid, servi
 };
 
 NobleBindings.prototype.onNotify = function({ peripheralUuid, serviceUuid, characteristicUuid, notifyState }) {
-  this.emit('notify', peripheralUuid, serviceUuid, characteristicUuid, notifyState);
+  this.emit('notify', peripheralUuid, to16BitsUuid(serviceUuid), to16BitsUuid(characteristicUuid), notifyState);
 };
 
 NobleBindings.prototype.onData = function({ peripheralUuid, serviceUuid, characteristicUuid, data, isNotification }) {
   let processedData = new Buffer(JSON.parse(data), 'base64');
-  this.emit('data', peripheralUuid, serviceUuid, characteristicUuid, processedData, isNotification);
-  this.emit('read', peripheralUuid, serviceUuid, characteristicUuid, processedData, isNotification);
+  this.emit('data', peripheralUuid, to16BitsUuid(serviceUuid), to16BitsUuid(characteristicUuid), processedData, isNotification);
+  this.emit('read', peripheralUuid, to16BitsUuid(serviceUuid), to16BitsUuid(characteristicUuid), processedData, isNotification);
 };
 
 NobleBindings.prototype.onStateChange = function(params) {
@@ -129,7 +130,7 @@ nobleBindings.discoverIncludedServices = function(deviceUuid, serviceUuid, servi
 };
 
 nobleBindings.discoverCharacteristics = function(deviceUuid, serviceUuid, characteristicUuids) {
-  RNBLE.discoverCharacteristics(deviceUuid, toAppleUuid(serviceUuid), toAppleUuids(characteristicUuids));
+  RNBLE.discoverCharacteristics(deviceUuid, toAppleUuid(to128BitsUuid(serviceUuid)), toAppleUuids(to128BitsUuids(characteristicUuids)));
 };
 
 nobleBindings.discoverDescriptors = function(deviceUuid, serviceUuid, characteristicUuid) {
@@ -145,7 +146,7 @@ nobleBindings.write = function(deviceUuid, serviceUuid, characteristicUuid, data
 };
 
 nobleBindings.notify = function(deviceUuid, serviceUuid, characteristicUuid, notify) {
-  RNBLE.notify(deviceUuid, toAppleUuid(serviceUuid), toAppleUuid(characteristicUuid), notify);
+  RNBLE.notify(deviceUuid, toAppleUuid(to128BitsUuid(serviceUuid)), toAppleUuid(to128BitsUuid(characteristicUuid)), notify);
 };
 
 function toAppleUuid(uuid) {
@@ -164,5 +165,20 @@ function toAppleUuids(uuids) {
   return convertedUuids;
 }
 
+
+function to128BitsUuids(uuids){
+  return uuids.map(uuid => to128BitsUuid(uuid))
+}
+function to128BitsUuid(uuid){
+  return `0000${uuid}00001000800000805f9b34fb`
+}
+
+
+function to16BitsUuids(uuids){
+  return uuids.map(uuid => to16BitsUuid(uuid))
+}
+function to16BitsUuid(uuid){
+  return  uuid.slice(4,8)
+}
 // Exports
 module.exports = nobleBindings;
