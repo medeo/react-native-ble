@@ -49,8 +49,7 @@
       {
         "path": "@semantic-release/changelog",
         "changelogFile": "CHANGELOG.md"
-      },
-      "@medeo/semantic-release-git"
+      }
     ]
   },
   "dependencies": {
