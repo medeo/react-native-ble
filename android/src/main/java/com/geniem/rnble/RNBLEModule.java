@@ -302,39 +302,39 @@ class RNBLEModule extends ReactContextBaseJavaModule implements LifecycleEventLi
                 }
 
                 //process characteristics 
-                for(BluetoothGattCharacteristic c : filteredCharacteristics){
+                for(BluetoothGattCharacteristic c : filteredCharacteristics) {
                     WritableArray properties = Arguments.createArray();
                     int propertyBitmask = c.getProperties();
 
-                    if((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_BROADCAST) != 0){
+                    if ((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_BROADCAST) != 0) {
                         properties.pushString("broadcast");
                     }
 
-                    if((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_READ) != 0){
+                    if ((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_READ) != 0) {
                         properties.pushString("read");
                     }
 
-                    if((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE) != 0){
+                    if ((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE) != 0) {
                         properties.pushString("writeWithoutResponse");
                     }
 
-                    if((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_WRITE) != 0){
+                    if ((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_WRITE) != 0) {
                         properties.pushString("write");
                     }
 
-                    if((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0){
-                       properties.pushString("notify");
-                    }                                                
+                    if ((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) {
+                        properties.pushString("notify");
+                    }
 
-                    if((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_INDICATE) != 0){
+                    if ((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_INDICATE) != 0) {
                         properties.pushString("indicate");
                     }
 
-                    if((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_SIGNED_WRITE) != 0){
+                    if ((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_SIGNED_WRITE) != 0) {
                         properties.pushString("authenticatedSignedWrites");
                     }
 
-                    if((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_EXTENDED_PROPS) != 0){
+                    if ((propertyBitmask & BluetoothGattCharacteristic.PROPERTY_EXTENDED_PROPS) != 0) {
                         properties.pushString("extendedProperties");
                     }
 
@@ -344,7 +344,7 @@ class RNBLEModule extends ReactContextBaseJavaModule implements LifecycleEventLi
 
                     requestedCharacteristics.pushMap(characteristicObject);
                 }
-            break;    
+            break;
             }
         }
 
@@ -452,6 +452,8 @@ class RNBLEModule extends ReactContextBaseJavaModule implements LifecycleEventLi
 
     @ReactMethod
     public void write(String deviceUuid,String serviceUuid,String characteristicUuid,String data, Boolean withoutResponse){
+        Log.d(TAG, "Attempts Writing data to BLE characteristic");
+
         for(BluetoothGattService service : this.discoveredServices){
             String uuid = service.getUuid().toString();
             //find requested service
