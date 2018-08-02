@@ -452,7 +452,7 @@ class RNBLEModule extends ReactContextBaseJavaModule implements LifecycleEventLi
 
     @ReactMethod
     public void write(String deviceUuid,String serviceUuid,String characteristicUuid,String data, Boolean withoutResponse){
-        Log.d(TAG, "Attempts Writing data to BLE characteristic");
+        Log.d(TAG, "Attempts writing data to BLE characteristic");
 
         for(BluetoothGattService service : this.discoveredServices){
             String uuid = service.getUuid().toString();
