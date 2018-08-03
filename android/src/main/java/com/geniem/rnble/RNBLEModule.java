@@ -119,7 +119,7 @@ class RNBLEModule extends ReactContextBaseJavaModule implements LifecycleEventLi
                 final int bond_state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE,
                         BluetoothDevice.ERROR);
                 BluetoothDevice bluetoothDevice = intent.getExtras().getParcelable(BluetoothDevice.EXTRA_DEVICE);
-                Log.d(TAG, "bond state changed + " + bondState );
+                Log.d(TAG, "bond state changed + " + bond_state );
                 Log.d(TAG, "device " + bluetoothDevice.toString());
             }
         }
