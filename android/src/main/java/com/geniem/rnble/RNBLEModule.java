@@ -106,9 +106,20 @@ class RNBLEModule extends ReactContextBaseJavaModule implements LifecycleEventLi
         }
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        IntentFilter bondFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         context.registerReceiver(bleStateReceiver, filter);
+        context.registerReceiver(bondStateReceiver, bondFilter);
     }
 
+    private final BroadcastReceiver bondStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+               Log.d(TAG, "bond state changed");
+            }
+        }
+    };
     private final BroadcastReceiver bleStateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -453,7 +464,6 @@ class RNBLEModule extends ReactContextBaseJavaModule implements LifecycleEventLi
     @ReactMethod
     public void write(String deviceUuid,String serviceUuid,String characteristicUuid,String data, Boolean withoutResponse){
         Log.d(TAG, "Attempts writing data to BLE characteristic");
-
         for(BluetoothGattService service : this.discoveredServices){
             String uuid = service.getUuid().toString();
             //find requested service
