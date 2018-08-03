@@ -119,7 +119,10 @@ class RNBLEModule extends ReactContextBaseJavaModule implements LifecycleEventLi
                 final int bond_state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE,
                         BluetoothDevice.ERROR);
                 BluetoothDevice bluetoothDevice = intent.getExtras().getParcelable(BluetoothDevice.EXTRA_DEVICE);
-                Log.d(TAG, "bond state changed + " + bond_state );
+                WritableMap params = Arguments.createMap();
+                params.putString("bond", bondStateToString(bluetoothDevice.getBondState()));
+                params.putString("peripheralUuid", bluetoothDevice.getAddress());
+                sendEvent("ble.bondStateChange", params);
                 Log.d(TAG, "device " + bluetoothDevice.toString());
             }
         }
@@ -566,6 +569,19 @@ class RNBLEModule extends ReactContextBaseJavaModule implements LifecycleEventLi
                 return "poweredOn";
             case BluetoothAdapter.STATE_TURNING_ON:
                 return "turningOn";
+            default:
+                return "unknown";
+        }
+    }
+
+    private String bondStateToString(int state){
+        switch (state) {
+            case BluetoothDevice.BOND_BONDED:
+                return "bonded";
+            case BluetoothDevice.BOND_BONDING:
+                return "bonding";
+            case BluetoothDevice.BOND_NONE:
+                return "noBond";
             default:
                 return "unknown";
         }
